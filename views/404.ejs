@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>404 - Page Not Found</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #232526 0%, #414345 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            color: #fff;
+            position: relative;
+            z-index: 2;
+        }
+        .glitch {
+            font-size: 8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            position: relative;
+            color: #fff;
+            animation: glitch 1s infinite linear alternate-reverse;
+        }
+        .glitch:before,
+        .glitch:after {
+            content: '404';
+            position: absolute;
+            left: 0;
+            width: 100%;
+            opacity: 0.7;
+        }
+        .glitch:before {
+            color: #00fff7;
+            z-index: -1;
+            animation: glitchTop 1s infinite linear alternate-reverse;
+        }
+        .glitch:after {
+            color: #ff00c8;
+            z-index: -2;
+            animation: glitchBottom 1s infinite linear alternate-reverse;
+        }
+        @keyframes glitch {
+            0% { transform: none; }
+            20% { transform: skew(-2deg, 2deg); }
+            40% { transform: skew(2deg, -1deg); }
+            60% { transform: skew(-1deg, 1deg); }
+            80% { transform: skew(1deg, -2deg); }
+            100% { transform: none; }
+        }
+        @keyframes glitchTop {
+            0% { transform: translate(2px, -2px); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-4px, 0px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(-1px, -1px); }
+            100% { transform: translate(2px, -2px); }
+        }
+        @keyframes glitchBottom {
+            0% { transform: translate(-2px, 2px); }
+            20% { transform: translate(2px, -2px); }
+            40% { transform: translate(4px, 0px); }
+            60% { transform: translate(-2px, -2px); }
+            80% { transform: translate(1px, 1px); }
+            100% { transform: translate(-2px, 2px); }
+        }
+        .message {
+            font-size: 2rem;
+            margin-top: 1rem;
+            animation: fadeIn 2s;
+        }
+        .home-btn {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            color: #fff;
+            background: linear-gradient(90deg, #00fff7 0%, #ff00c8 100%);
+            border: none;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            animation: bounce 2s infinite;
+        }
+        .home-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(40px);}
+            to { opacity: 1; transform: none;}
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0);}
+            50% { transform: translateY(-10px);}
+        }
+        /* Animated floating shapes */
+        .shapes {
+            position: absolute;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.15;
+            animation: float 8s infinite ease-in-out alternate;
+        }
+        .shape1 { width: 200px; height: 200px; background: #00fff7; top: 10%; left: 5%; animation-delay: 0s;}
+        .shape2 { width: 150px; height: 150px; background: #ff00c8; top: 70%; left: 80%; animation-delay: 2s;}
+        .shape3 { width: 100px; height: 100px; background: #fff; top: 60%; left: 10%; animation-delay: 4s;}
+        .shape4 { width: 120px; height: 120px; background: #00fff7; top: 30%; left: 70%; animation-delay: 1s;}
+        @keyframes float {
+            0% { transform: translateY(0) scale(1);}
+            100% { transform: translateY(-40px) scale(1.1);}
+        }
+    </style>
+</head>
+<body>
+    <div class="shapes">
+        <div class="shape shape1"></div>
+        <div class="shape shape2"></div>
+        <div class="shape shape3"></div>
+        <div class="shape shape4"></div>
+    </div>
+    <div class="container">
+        <div class="glitch">404</div>
+        <div class="message">Oops! The page you're looking for doesn't exist.</div>
+        <a href="/" class="home-btn">Go Home</a>
+    </div>
+</body>
+</html>
