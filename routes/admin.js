@@ -1,14 +1,43 @@
 const express = require("express");
-const { loginPage, adminLogin, logout, allUser, addUserPage, addUser, updateUserPage, updateUser, deleteUser } = require("../controller/userController");
-const { allCategory, addCategoryPage, addCategory, updateCategoryPage, updateCategory, deleteCategory } = require("../controller/categoryController");
-const { allArticle, addArticlePage, addArticle, updateArticlePage, updateArticle, deleteArticle } = require("../controller/articleController");
+const {
+  loginPage,
+  adminLogin,
+  logout,
+  allUser,
+  addUserPage,
+  addUser,
+  updateUserPage,
+  updateUser,
+  deleteUser,
+  dashboard,
+  settings,
+} = require("../controller/userController");
+const {
+  allCategory,
+  addCategoryPage,
+  addCategory,
+  updateCategoryPage,
+  updateCategory,
+  deleteCategory,
+} = require("../controller/categoryController");
+const {
+  allArticle,
+  addArticlePage,
+  addArticle,
+  updateArticlePage,
+  updateArticle,
+  deleteArticle,
+} = require("../controller/articleController");
 const { allComments } = require("../controller/commentController");
 const router = express.Router();
 
 //login route
 router.get("/", loginPage);
 router.post("/index", adminLogin);
-router.post("/logout", logout);
+router.get("/logout", logout);
+router.get("/dashboard", dashboard);
+router.get("/settings", settings);
+
 
 //user CRUD route
 router.get("/users", allUser);

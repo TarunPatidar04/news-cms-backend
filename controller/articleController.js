@@ -1,15 +1,20 @@
-const newsModel=require("../models/News")
+const newsModel = require("../models/News");
 const userModel = require("../models/User");
 const categoryModel = require("../models/Category");
 
+exports.allArticle = async (req, res) => {
+  res.render("admin/articles");
+};
 
-exports.allArticle = async (req, res) => {};
-
-exports.addArticlePage = async (req, res) => {};
+exports.addArticlePage = async (req, res) => {
+  res.render("admin/articles/create");
+};
 
 exports.addArticle = async (req, res) => {};
 
-exports.updateArticlePage = async (req, res) => {};
+exports.updateArticlePage = async (req, res) => {
+  res.render("admin/articles/update");
+};
 
 exports.updateArticle = async (req, res) => {};
 
