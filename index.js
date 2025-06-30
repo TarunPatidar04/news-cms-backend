@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const expressLayouts = require("express-ejs-layouts");
 const session = require("express-session");
+const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const frontend = require("./routes/frontend");
@@ -15,6 +16,7 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: false }));
 app.use(expressLayouts);
+app.use(cookieParser());
 app.set("layout", "layout");
 app.use(
   session({

@@ -3,11 +3,11 @@ const newsModel = require("../models/News");
 const userModel = require("../models/User");
 
 exports.allCategory = async (req, res) => {
-  res.render("admin/categories");
+  res.render("admin/categories", { role: req.role });
 };
 
 exports.addCategoryPage = async (req, res) => {
-  res.render("admin/categories/create");
+  res.render("admin/categories/create", { role: req.role });
 };
 
 exports.addCategory = async (req, res) => {
@@ -15,7 +15,7 @@ exports.addCategory = async (req, res) => {
 };
 
 exports.updateCategoryPage = async (req, res) => {
-  res.render("admin/categories/update");
+  res.render("admin/categories/update", { role: req.role });
 };
 
 exports.updateCategory = async (req, res) => {
