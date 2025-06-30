@@ -5,7 +5,7 @@
         <h1 class="admin-heading"><i class="fa fa-users"></i> All Users</h1>
       </div>
       <div class="col-md-2">
-        <a class="add-new" href="add-user.html">add user</a>
+        <a class="add-new" href="/admin/add-user">add user</a>
       </div>
       <div class="col-md-12">
         <table class="content-table">
@@ -18,54 +18,24 @@
             <th>Delete</th>
           </thead>
           <tbody>
+            <% users.forEach((user, index) => { %>
             <tr>
-              <td class="id">1</td>
-              <td>Ram Sharma</td>
-              <td>ram</td>
-              <td>admin</td>
+              <td class="id"><%= index + 1 %></td>
+              <td><%= user.fullname %></td>
+              <td><%= user.username %></td>
+              <td><%= user.role %></td>
               <td class="edit">
-                <a href="update-user.html"><i class="fa fa-edit"></i></a>
+                <a href="/admin/update-user/<%= user._id %>"
+                  ><i class="fa fa-edit"></i
+                ></a>
               </td>
               <td class="delete">
-                <a href="delete-user.html"><i class="fa fa-trash-o"></i></a>
+                <a href="/admin/delete-user/<%= user._id %>"
+                  ><i class="fa fa-trash-o"></i
+                ></a>
               </td>
             </tr>
-            <tr>
-              <td class="id">2</td>
-              <td>Shyam Kumar</td>
-              <td>shyam</td>
-              <td>author</td>
-              <td class="edit">
-                <a href="update-user.html"><i class="fa fa-edit"></i></a>
-              </td>
-              <td class="delete">
-                <a href="delete-user.html"><i class="fa fa-trash-o"></i></a>
-              </td>
-            </tr>
-            <tr>
-              <td class="id">3</td>
-              <td>Ramesh Kumar</td>
-              <td>ramesh</td>
-              <td>admin</td>
-              <td class="edit">
-                <a href="update-user.html"><i class="fa fa-edit"></i></a>
-              </td>
-              <td class="delete">
-                <a href="delete-user.html"><i class="fa fa-trash-o"></i></a>
-              </td>
-            </tr>
-            <tr>
-              <td class="id">4</td>
-              <td>Satish Sharma</td>
-              <td>satish</td>
-              <td>admin</td>
-              <td class="edit">
-                <a href="update-user.html"><i class="fa fa-edit"></i></a>
-              </td>
-              <td class="delete">
-                <a href="delete-user.html"><i class="fa fa-trash-o"></i></a>
-              </td>
-            </tr>
+            <% }) %>
           </tbody>
         </table>
         <nav>
