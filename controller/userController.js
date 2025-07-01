@@ -1,5 +1,7 @@
 // controller/userController.js
 const userModel = require("../models/User");
+const newsModel = require("../models/News");
+const categoryModel = require("../models/Category");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
@@ -59,8 +61,31 @@ exports.logout = async (req, res) => {
 };
 
 exports.dashboard = async (req, res) => {
-  res.render("admin/dashboard", { role: req.role, fullname: req.fullname });
+  try {
+    let articleCount;
+    if (req.role == "author") {
+      articleCount = await newsModel.countDocuments({ author: req.id });
+    } else {
+      articleCount = await newsModel.countDocuments();
+    }
+    // Fetch any necessary data for the dashboard
+    const userCount = await userModel.countDocuments();
+    const categoryCount = await categoryModel.countDocuments();
+
+    // Render the dashboard with the fetched data
+    res.render("admin/dashboard", {
+      role: req.role,
+      fullname: req.fullname,
+      userCount,
+      articleCount,
+      categoryCount,
+    });
+  } catch (error) {
+    console.error("Error fetching dashboard data:", error);
+    res.status(500).send("Internal Server Error");
+  }
 };
+
 exports.settings = async (req, res) => {
   res.render("admin/settings", { role: req.role });
 };

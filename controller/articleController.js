@@ -1,6 +1,10 @@
 const newsModel = require("../models/News");
 const userModel = require("../models/User");
 const categoryModel = require("../models/Category");
+const fs = require("fs");
+const path = require("path");
+
+
 
 exports.allArticle = async (req, res) => {
   try {
@@ -96,6 +100,17 @@ exports.updateArticle = async (req, res) => {
     article.category = category;
 
     if (req.file) {
+      // Delete the old image if it exists
+      if (article.image) {
+        const oldImagePath = path.join(
+          __dirname,
+          "../public/uploads",
+          article.image
+        );
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        }
+      }
       article.image = req.file.filename;
     }
 
@@ -119,6 +134,17 @@ exports.deleteArticle = async (req, res) => {
         return res
           .status(403)
           .send("You are not authorized to update this article");
+      }
+    }
+    // Delete the image file if it exists
+    if (article.image) {
+      const imagePath = path.join(
+        __dirname,
+        "../public/uploads",
+        article.image
+      );
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
       }
     }
     await article.deleteOne();
