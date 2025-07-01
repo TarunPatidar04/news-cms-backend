@@ -3,7 +3,8 @@ const newsModel = require("../models/News");
 const userModel = require("../models/User");
 
 exports.allCategory = async (req, res) => {
-  res.render("admin/categories", { role: req.role });
+  const categories = await categoryModel.find();
+  res.render("admin/categories", { role: req.role, categories });
 };
 
 exports.addCategoryPage = async (req, res) => {
@@ -11,17 +12,57 @@ exports.addCategoryPage = async (req, res) => {
 };
 
 exports.addCategory = async (req, res) => {
-  // TODO: Implement logic to add a new category
+  try {
+    await categoryModel.create(req.body);
+    res.redirect("/admin/category");
+  } catch (error) {
+    res.status(400).send("Internal Server Error in addCategory", error);
+  }
 };
 
 exports.updateCategoryPage = async (req, res) => {
-  res.render("admin/categories/update", { role: req.role });
+  try {
+    const category = await categoryModel.findById(req.params.id);
+    if (!category) {
+      return res.status(404).send("Category not found");
+    }
+
+    res.render("admin/categories/update", { role: req.role, category });
+  } catch (error) {
+    res.status(400).send("Internal Server Error in getCategory", error);
+  }
 };
 
 exports.updateCategory = async (req, res) => {
-  // TODO: Implement logic to update a category
+  try {
+    const category = await categoryModel.findByIdAndUpdate(
+      req.params.id,
+      req.body
+    );
+    if (!category) {
+      return res.status(404).send("Category not found");
+    }
+    res.redirect("/admin/category");
+  } catch (error) {
+    res.status(400).send("Internal Server Error in updateCategory", error);
+  }
 };
 
 exports.deleteCategory = async (req, res) => {
-  // TODO: Implement logic to delete a category
+  try {
+    const category = await categoryModel.findByIdAndDelete(req.params.id);
+    if (!category) {
+      return res.status(404).send("Category not found");
+    }
+    
+
+    // res.json({
+    //   success: true,
+    //   message: "Category deleted successfully",
+    // });
+    res.redirect("/admin/category");
+
+  } catch (error) {
+    res.status(400).send("Internal Server Error in deleteCategory", error);
+  }
 };

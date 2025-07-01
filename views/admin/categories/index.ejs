@@ -7,84 +7,35 @@
         </h1>
       </div>
       <div class="col-md-2">
-        <a class="add-new" href="add-category.html">add category</a>
+        <a class="add-new" href="/admin/add-category">add category</a>
       </div>
       <div class="col-md-12">
         <table class="content-table">
           <thead>
             <th>S.No.</th>
             <th>Category Name</th>
-            <th>No. of Article</th>
+            <th>Description</th>
             <th>Edit</th>
             <th>Delete</th>
           </thead>
           <tbody>
+            <% categories.forEach((category, index) => { %>
             <tr>
-              <td class="id">1</td>
-              <td>Html</td>
-              <td>5</td>
+              <td class="id"><%= index + 1 %></td>
+              <td><%= category.name %></td>
+              <td><%= category.description %></td>
               <td class="edit">
-                <a href="update-category.html"><i class="fa fa-edit"></i></a>
+                <a href="/admin/update-category/<%= category._id %>"
+                  ><i class="fa fa-edit"></i
+                ></a>
               </td>
               <td class="delete">
-                <a href="delete-category.html"><i class="fa fa-trash-o"></i></a>
+                <a href="/admin/delete-category/<%= category._id %>"
+                  ><i class="fa fa-trash-o"></i
+                ></a>
               </td>
             </tr>
-            <tr>
-              <td class="id">2</td>
-              <td>Css</td>
-              <td>15</td>
-              <td class="edit">
-                <a href="update-category.html"><i class="fa fa-edit"></i></a>
-              </td>
-              <td class="delete">
-                <a href="delete-category.html"><i class="fa fa-trash-o"></i></a>
-              </td>
-            </tr>
-            <tr>
-              <td class="id">3</td>
-              <td>Java</td>
-              <td>8</td>
-              <td class="edit">
-                <a href="update-category.html"><i class="fa fa-edit"></i></a>
-              </td>
-              <td class="delete">
-                <a href="delete-category.html"><i class="fa fa-trash-o"></i></a>
-              </td>
-            </tr>
-            <tr>
-              <td class="id">4</td>
-              <td>Php</td>
-              <td>11</td>
-              <td class="edit">
-                <a href="update-category.html"><i class="fa fa-edit"></i></a>
-              </td>
-              <td class="delete">
-                <a href="delete-category.html"><i class="fa fa-trash-o"></i></a>
-              </td>
-            </tr>
-            <tr>
-              <td class="id">5</td>
-              <td>Python</td>
-              <td>13</td>
-              <td class="edit">
-                <a href="update-category.html"><i class="fa fa-edit"></i></a>
-              </td>
-              <td class="delete">
-                <a href="delete-category.html"><i class="fa fa-trash-o"></i></a>
-              </td>
-            </tr>
-            <tr>
-              <td class="id">6</td>
-              <td>Scss</td>
-              <td>3</td>
-              <td class="edit">
-                <a href="update-category.html"><i class="fa fa-edit"></i></a>
-              </td>
-              <td class="delete">
-                <a href="delete-category.html"><i class="fa fa-trash-o"></i></a>
-              </td>
-            </tr>
+            <% }); %>
           </tbody>
         </table>
         <nav>
