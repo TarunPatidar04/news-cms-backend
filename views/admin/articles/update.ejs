@@ -9,7 +9,11 @@
           <h5 class="card-header">Update Article</h5>
           <div class="card-body">
             <!-- Form -->
-            <form action="" method="POST" enctype="multipart/form-data">
+            <form
+              action="/admin/update-article/<%= article._id %>"
+              method="POST"
+              enctype="multipart/form-data"
+            >
               <div class="mb-3">
                 <label for="article_title" class="form-label">Title</label>
                 <input
@@ -19,6 +23,7 @@
                   class="form-control"
                   autocomplete="off"
                   required
+                  value="<%= article.title %>"
                 />
               </div>
               <div class="mb-3">
@@ -29,7 +34,9 @@
                   class="form-control"
                   rows="5"
                   required
-                ></textarea>
+                >
+                  <%= article.content %>
+                </textarea>
               </div>
               <div class="mb-3">
                 <label for="article_category" class="form-label"
@@ -40,19 +47,35 @@
                   id="article_category"
                   class="form-control"
                 >
-                  <option value="" selected>Select Category</option>
+                  <% categories.forEach((category) => { %> <%
+                  if(article.category.toString() === category._id.toString()) {
+                  %>
+                  <option value="<%= category._id %>" selected>
+                    <%= category.name %>
+                  </option>
+                  <% } else { %>
+                  <option value="<%= category._id %>">
+                    <%= category.name %>
+                  </option>
+                  <% } %> <% }); %>
                 </select>
               </div>
               <div class="mb-3">
                 <label for="article_image" class="form-label"
                   >Article image</label
                 >
+                <br />
+
+                <img
+                  src="/uploads/<%= article.image %>"
+                  alt="<%= article.title %>"
+                  class="img-fluid mb-3 w-25"
+                />
                 <input
                   type="file"
                   name="image"
                   id="article_image"
                   class="form-control"
-                  required
                 />
               </div>
               <input
@@ -69,3 +92,20 @@
     </div>
   </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $("#summernote").summernote({
+      placeholder: "Start typing...",
+      tabsize: 2,
+      height: 200,
+    });
+  });
+</script>
+<% contentFor("summerNoteCss") %>
+<link
+  href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css"
+  rel="stylesheet"
+/>

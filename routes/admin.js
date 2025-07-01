@@ -31,6 +31,7 @@ const {
 const { allComments } = require("../controller/commentController");
 const isLoggedIn = require("../middleware/isLoggedin");
 const isAdmin = require("../middleware/isAdmin");
+const upload = require("../middleware/multer");
 const router = express.Router();
 
 //login route
@@ -59,9 +60,9 @@ router.get("/delete-category/:id", isLoggedIn, isAdmin, deleteCategory);
 //Article CRUD route
 router.get("/article", isLoggedIn, allArticle);
 router.get("/add-article", isLoggedIn, addArticlePage);
-router.post("/add-article", isLoggedIn, addArticle);
+router.post("/add-article", isLoggedIn, upload.single("image"), addArticle);
 router.get("/update-article/:id", isLoggedIn, updateArticlePage);
-router.post("/update-article/:id", isLoggedIn, updateArticle);
+router.post("/update-article/:id", isLoggedIn, upload.single("image"), updateArticle);
 router.get("/delete-article/:id", isLoggedIn, deleteArticle);
 
 //Comment  route
