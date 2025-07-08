@@ -6,6 +6,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const SettingModel = require("../models/Setting");
+const { createError } = require("../utils/errorMessage");
 dotenv.config();
 
 // Login route controllers
@@ -23,13 +24,13 @@ exports.adminLogin = async (req, res) => {
     // Find user by username
     const user = await userModel.findOne({ username });
     if (!user) {
-      return res.status(404).send("User not found");
+      return next(createError("User not Found", 404));
     }
 
     // Check password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).send("Invalid credentials");
+      return next(createError("Invalid User and Password", 401));
     }
 
     const jwtData = {
@@ -64,7 +65,7 @@ exports.logout = async (req, res) => {
 };
 
 // Dashboard controller
-exports.dashboard = async (req, res) => {
+exports.dashboard = async (req, res, next) => {
   try {
     let articleCount;
     if (req.role == "author") {
@@ -85,13 +86,12 @@ exports.dashboard = async (req, res) => {
       categoryCount,
     });
   } catch (error) {
-    console.error("Error fetching dashboard data:", error);
-    res.status(500).send("Internal Server Error");
+    next(error);
   }
 };
 
 // Settings controller
-exports.settings = async (req, res) => {
+exports.settings = async (req, res, next) => {
   try {
     // Fetch settings from the database
     const settings = await SettingModel.findOne({});
@@ -100,13 +100,12 @@ exports.settings = async (req, res) => {
     }
     res.render("admin/settings", { role: req.role, settings });
   } catch (error) {
-    console.error("Error fetching settings:", error);
-    res.status(500).send("Internal Server Error");
+    next(error);
   }
 };
 
 // Save settings controller
-exports.saveSettings = async (req, res) => {
+exports.saveSettings = async (req, res, next) => {
   const { website_title, footer_description } = req.body;
   const website_logo = req.file ? req.file.filename : null;
 
@@ -119,15 +118,18 @@ exports.saveSettings = async (req, res) => {
     );
     res.redirect("/admin/settings");
   } catch (error) {
-    console.error("Error saving settings:", error);
-    res.status(500).send("Internal Server Error");
+    next(error);
   }
 };
 
 // User CRUD controllers
-exports.allUser = async (req, res) => {
-  const users = await userModel.find();
-  res.render("admin/users", { users, role: req.role });
+exports.allUser = async (req, res, next) => {
+  try {
+    const users = await userModel.find();
+    res.render("admin/users", { users, role: req.role });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // Add user controllers
@@ -136,40 +138,38 @@ exports.addUserPage = async (req, res) => {
 };
 
 // Add user controller
-exports.addUser = async (req, res) => {
+exports.addUser = async (req, res, next) => {
   // res.render("index")
   // const { fullname, username, password, role } = req.body;
   try {
     await userModel.create(req.body);
     res.redirect("/admin/users");
   } catch (error) {
-    console.error("Error adding user:", error);
-    res.status(500).send("Internal Server Error");
+    next(error);
   }
 };
 
 // Update user controllers
-exports.updateUserPage = async (req, res) => {
+exports.updateUserPage = async (req, res, next) => {
   try {
     const user = await userModel.findById(req.params.id);
     if (!user) {
-      return res.status(404).send("User not found");
+      return next(createError("User not found", 404));
     }
     res.render("admin/users/update", { user, role: req.role });
   } catch (error) {
-    console.error("Error fetching user:", error);
-    res.status(500).send("Internal Server Error");
+    next(error);
   }
 };
 
 // Update user controller
-exports.updateUser = async (req, res) => {
+exports.updateUser = async (req, res, next) => {
   const { fullname, password, role } = req.body;
   try {
     const user = await userModel.findById(req.params.id);
 
     if (!user) {
-      return res.status(404).send("User not found");
+      return next(createError("User not found", 404));
     }
 
     user.fullname = fullname || user.fullname;
@@ -183,18 +183,16 @@ exports.updateUser = async (req, res) => {
     await user.save();
     res.redirect("/admin/users");
   } catch (error) {
-    console.error("Error updating user:", error);
-    res.status(500).send("Internal Server Error");
+    next(error);
   }
 };
 
 // Delete user controller
-exports.deleteUser = async (req, res) => {
+exports.deleteUser = async (req, res, next) => {
   try {
     await userModel.findByIdAndDelete(req.params.id);
     res.redirect("/admin/users");
   } catch (error) {
-    console.error("Error deleting user:", error);
-    res.status(500).send("Internal Server Error");
+    next(error);
   }
 };

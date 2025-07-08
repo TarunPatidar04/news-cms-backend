@@ -81,4 +81,44 @@ router.get("/delete-article/:id", isLoggedIn, deleteArticle);
 //Comment  route
 router.get("/comments", isLoggedIn, allComments);
 
+// 404 middleware
+router.use(isLoggedIn, (req, res, next) => {
+  res.status(404).render("admin/404", {
+    message: "Page Not Found",
+    role: req.role,
+  });
+});
+
+//500 / 404 error handling middleware
+router.use(isLoggedIn, (err, req, res, next) => {
+  console.error(err.stack);
+  const statusCode = err.status || 500;
+  // const view = statusCode === 404 ? "admin/404" : "admin/500";
+  switch (statusCode) {
+    case 401:
+      view = "admin/401";
+      break;
+    case 404:
+      view = "admin/404";
+      break;
+    case 500:
+      view = "admin/500";
+      break;
+    default:
+      view = "admin/500";
+  }
+  res.status(statusCode).render(view, {
+    message: err.message || "Something went wrong",
+    role: req.role,
+  });
+});
+
+// router.use(isLoggedIn, (err, req, res, next) => {
+//   console.error(err.stack);
+//   res.status(500).render("admin/500", {
+//     message: err.message || "Internal Server Error",
+//     role: req.role,
+//   });
+// });
+
 module.exports = router;

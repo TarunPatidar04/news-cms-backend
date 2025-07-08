@@ -3,10 +3,9 @@ const userModel = require("../models/User");
 const categoryModel = require("../models/Category");
 const fs = require("fs");
 const path = require("path");
+const { createError } = require("../utils/errorMessage");
 
-
-
-exports.allArticle = async (req, res) => {
+exports.allArticle = async (req, res, next) => {
   try {
     let articles;
     if (req.role === "admin") {
@@ -22,8 +21,8 @@ exports.allArticle = async (req, res) => {
     }
     res.render("admin/articles", { role: req.role, articles });
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Server Error");
+    // console.error(error);
+    next(error);
   }
 };
 
@@ -32,7 +31,7 @@ exports.addArticlePage = async (req, res) => {
   res.render("admin/articles/create", { role: req.role, categories });
 };
 
-exports.addArticle = async (req, res) => {
+exports.addArticle = async (req, res, next) => {
   try {
     console.log("article", req.body);
     const { title, content, category } = req.body;
@@ -47,11 +46,11 @@ exports.addArticle = async (req, res) => {
     await article.save();
     res.redirect("/admin/article");
   } catch (error) {
-    res.status(500).send("Article not saved ");
+    next(error);
   }
 };
 
-exports.updateArticlePage = async (req, res) => {
+exports.updateArticlePage = async (req, res, next) => {
   try {
     const article = await newsModel
       .findById(req.params.id)
@@ -59,13 +58,17 @@ exports.updateArticlePage = async (req, res) => {
       .populate("author", "fullname");
 
     if (!article) {
-      return res.status(404).send("Article not found");
+      // return res.status(404).send("Article not found");
+      // const error = new Error("Article not found");
+      // error.status = 404;
+      // return next(error);
+      return next(createError("Article not found", 404));
     }
     if (req.role == "author") {
       if (req.id != article.author._id) {
-        return res
-          .status(403)
-          .send("You are not authorized to update this article");
+        return next(
+          createError("You are not authorized to update this article", 401)
+        );
       }
     }
     const categories = await categoryModel.find();
@@ -75,24 +78,23 @@ exports.updateArticlePage = async (req, res) => {
       categories,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Server Error");
+    next(error);
   }
 };
 
-exports.updateArticle = async (req, res) => {
+exports.updateArticle = async (req, res, next) => {
   const id = req.params.id;
   try {
     const { title, content, category } = req.body;
     const article = await newsModel.findById(id);
     if (!article) {
-      return res.status(400).send("Article not found");
+      return next(createError("Article not found", 404));
     }
     if (req.role == "author") {
       if (req.id != article.author._id) {
-        return res
-          .status(403)
-          .send("You are not authorized to update this article");
+        return next(
+          createError("You are not authorized to update this article", 401)
+        );
       }
     }
     article.title = title;
@@ -117,23 +119,22 @@ exports.updateArticle = async (req, res) => {
     await article.save();
     res.redirect("/admin/article");
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Server Error");
+    next(error);
   }
 };
 
-exports.deleteArticle = async (req, res) => {
+exports.deleteArticle = async (req, res, next) => {
   const id = req.params.id;
   try {
     const article = await newsModel.findById(id);
     if (!article) {
-      return res.status(400).send("Article not found");
+      return next(createError("Article not found", 404));
     }
     if (req.role == "author") {
       if (req.id != article.author._id) {
-        return res
-          .status(403)
-          .send("You are not authorized to update this article");
+        return next(
+          createError("You are not authorized to update this article", 401)
+        );
       }
     }
     // Delete the image file if it exists
@@ -150,7 +151,6 @@ exports.deleteArticle = async (req, res) => {
     await article.deleteOne();
     res.redirect("/admin/article");
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Server Error");
+    next(error);
   }
 };
