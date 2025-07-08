@@ -5,6 +5,7 @@ const categoryModel = require("../models/Category");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
+const SettingModel = require("../models/Setting");
 dotenv.config();
 
 // Login route controllers
@@ -14,6 +15,7 @@ exports.loginPage = async (req, res) => {
   });
 };
 
+// Admin login controller
 exports.adminLogin = async (req, res) => {
   const { username, password } = req.body;
 
@@ -49,6 +51,7 @@ exports.adminLogin = async (req, res) => {
   }
 };
 
+// Logout controller
 exports.logout = async (req, res) => {
   try {
     // Clear the cookie
@@ -60,6 +63,7 @@ exports.logout = async (req, res) => {
   }
 };
 
+// Dashboard controller
 exports.dashboard = async (req, res) => {
   try {
     let articleCount;
@@ -86,8 +90,38 @@ exports.dashboard = async (req, res) => {
   }
 };
 
+// Settings controller
 exports.settings = async (req, res) => {
-  res.render("admin/settings", { role: req.role });
+  try {
+    // Fetch settings from the database
+    const settings = await SettingModel.findOne({});
+    if (!settings) {
+      return res.render("admin/settings", { role: req.role, settings: {} });
+    }
+    res.render("admin/settings", { role: req.role, settings });
+  } catch (error) {
+    console.error("Error fetching settings:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+// Save settings controller
+exports.saveSettings = async (req, res) => {
+  const { website_title, footer_description } = req.body;
+  const website_logo = req.file ? req.file.filename : null;
+
+  try {
+    // Update or create settings in the database
+    await SettingModel.findOneAndUpdate(
+      {},
+      { website_title, footer_description, website_logo },
+      { upsert: true, new: true }
+    );
+    res.redirect("/admin/settings");
+  } catch (error) {
+    console.error("Error saving settings:", error);
+    res.status(500).send("Internal Server Error");
+  }
 };
 
 // User CRUD controllers
@@ -96,10 +130,12 @@ exports.allUser = async (req, res) => {
   res.render("admin/users", { users, role: req.role });
 };
 
+// Add user controllers
 exports.addUserPage = async (req, res) => {
   res.render("admin/users/create", { role: req.role });
 };
 
+// Add user controller
 exports.addUser = async (req, res) => {
   // res.render("index")
   // const { fullname, username, password, role } = req.body;
@@ -112,6 +148,7 @@ exports.addUser = async (req, res) => {
   }
 };
 
+// Update user controllers
 exports.updateUserPage = async (req, res) => {
   try {
     const user = await userModel.findById(req.params.id);
@@ -125,6 +162,7 @@ exports.updateUserPage = async (req, res) => {
   }
 };
 
+// Update user controller
 exports.updateUser = async (req, res) => {
   const { fullname, password, role } = req.body;
   try {
@@ -150,6 +188,7 @@ exports.updateUser = async (req, res) => {
   }
 };
 
+// Delete user controller
 exports.deleteUser = async (req, res) => {
   try {
     await userModel.findByIdAndDelete(req.params.id);

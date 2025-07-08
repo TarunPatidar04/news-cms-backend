@@ -11,6 +11,7 @@ const {
   deleteUser,
   dashboard,
   settings,
+  saveSettings,
 } = require("../controller/userController");
 const {
   allCategory,
@@ -40,6 +41,13 @@ router.post("/index", adminLogin);
 router.get("/logout", logout);
 router.get("/dashboard", isLoggedIn, dashboard);
 router.get("/settings", isLoggedIn, isAdmin, settings);
+router.post(
+  "/save-settings",
+  isLoggedIn,
+  isAdmin,
+  upload.single("website_logo"),
+  saveSettings
+);
 
 //user CRUD route
 router.get("/users", isLoggedIn, isAdmin, allUser);
@@ -62,7 +70,12 @@ router.get("/article", isLoggedIn, allArticle);
 router.get("/add-article", isLoggedIn, addArticlePage);
 router.post("/add-article", isLoggedIn, upload.single("image"), addArticle);
 router.get("/update-article/:id", isLoggedIn, updateArticlePage);
-router.post("/update-article/:id", isLoggedIn, upload.single("image"), updateArticle);
+router.post(
+  "/update-article/:id",
+  isLoggedIn,
+  upload.single("image"),
+  updateArticle
+);
 router.get("/delete-article/:id", isLoggedIn, deleteArticle);
 
 //Comment  route
