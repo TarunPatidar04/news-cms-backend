@@ -17,8 +17,7 @@
                 <label for="website_title" class="form-label"
                   >Website Title</label
                 >
-                <% if (!settings.website_title.trim() === "" ||
-                !settings.website_title) { %>
+                <% if ( !settings.website_title) { %>
                 <input
                   type="text"
                   name="website_title"
@@ -40,8 +39,7 @@
               <div class="mb-3">
                 <label for="website_logo" class="form-label">Upload Logo</label>
                 <br />
-                <% if (settings.website_logo && settings.website_logo.trim() !==
-                "") { %>
+                <% if (settings.website_logo) { %>
                 <img
                   src="/uploads/<%= settings.website_logo || '' %>"
                   alt="Website Logo"
@@ -56,8 +54,7 @@
                 <label for="footer_description" class="form-label"
                   >Footer Description</label
                 >
-                <% if (!settings.footer_description.trim() === "" ||
-                !settings.footer_description) { %>
+                <% if ( !settings.footer_description) { %>
                 <input
                   type="text"
                   name="footer_description"

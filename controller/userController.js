@@ -6,6 +6,8 @@ const categoryModel = require("../models/Category");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
+const fs = require("fs");
+const path = require("path");
 const SettingModel = require("../models/Setting");
 const { createError } = require("../utils/errorMessage");
 dotenv.config();
@@ -120,12 +122,25 @@ exports.saveSettings = async (req, res, next) => {
   const website_logo = req.file ? req.file.filename : null;
 
   try {
-    // Update or create settings in the database
-    await SettingModel.findOneAndUpdate(
-      {},
-      { website_title, footer_description, website_logo },
-      { upsert: true, new: true }
-    );
+    var settings = await SettingModel.findOne({});
+    if (!settings) {
+      settings = new SettingModel();
+    }
+
+    settings.website_title = website_title;
+    settings.footer_description = footer_description;
+
+    if (website_logo) {
+      if (settings.website_logo) {
+        const logoPath = `./public/uploads/${settings.website_logo}`;
+        if (fs.existsSync(logoPath)) {
+          fs.unlinkSync(logoPath); // Delete the old logo file
+        }
+      }
+      settings.website_logo = website_logo;
+    }
+
+    await settings.save();
     res.redirect("/admin/settings");
   } catch (error) {
     next(error);
@@ -171,7 +186,7 @@ exports.updateUserPage = async (req, res, next) => {
     if (!user) {
       return next(createError("User not found", 404));
     }
-    res.render("admin/users/update", { user, role: req.role , errors: [] });
+    res.render("admin/users/update", { user, role: req.role, errors: [] });
   } catch (error) {
     next(error);
   }
@@ -179,7 +194,7 @@ exports.updateUserPage = async (req, res, next) => {
 
 // Update user controller
 exports.updateUser = async (req, res, next) => {
-   const errors = validationResult(req);
+  const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.render("admin/users/update", {
       user: req.body,
@@ -212,8 +227,21 @@ exports.updateUser = async (req, res, next) => {
 
 // Delete user controller
 exports.deleteUser = async (req, res, next) => {
+  const id = req.params.id;
   try {
-    await userModel.findByIdAndDelete(req.params.id);
+    const user = await userModel.findById(id);
+    if (!user) {
+      return next(createError("User not found", 404));
+    }
+    // Check if the user is associated with any news articles
+    const articles = await newsModel.find({ author: id });
+    if (articles.length > 0) {
+      return res
+        .status(400)
+        .send("User cannot be deleted as it is associated with news articles.");
+    }
+    await user.deleteOne();
+
     res.redirect("/admin/users");
   } catch (error) {
     next(error);
