@@ -4,6 +4,7 @@ const categoryModel = require("../models/Category");
 const fs = require("fs");
 const path = require("path");
 const { createError } = require("../utils/errorMessage");
+const { validationResult } = require("express-validator");
 
 exports.allArticle = async (req, res, next) => {
   try {
@@ -28,10 +29,23 @@ exports.allArticle = async (req, res, next) => {
 
 exports.addArticlePage = async (req, res) => {
   const categories = await categoryModel.find();
-  res.render("admin/articles/create", { role: req.role, categories });
+  res.render("admin/articles/create", {
+    role: req.role,
+    categories,
+    errors: [],
+  });
 };
 
 exports.addArticle = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const categories = await categoryModel.find();
+    return res.render("admin/articles/create", {
+      categories,
+      role: req.role,
+      errors: errors.array(),
+    });
+  }
   try {
     console.log("article", req.body);
     const { title, content, category } = req.body;
@@ -76,6 +90,7 @@ exports.updateArticlePage = async (req, res, next) => {
       role: req.role,
       article,
       categories,
+      errors: [],
     });
   } catch (error) {
     next(error);
@@ -84,6 +99,17 @@ exports.updateArticlePage = async (req, res, next) => {
 
 exports.updateArticle = async (req, res, next) => {
   const id = req.params.id;
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const categories = await categoryModel.find();
+    return res.render("admin/articles/update", {
+      categories,
+      article: req.body,
+      role: req.role,
+      errors: errors.array(),
+    });
+  }
   try {
     const { title, content, category } = req.body;
     const article = await newsModel.findById(id);

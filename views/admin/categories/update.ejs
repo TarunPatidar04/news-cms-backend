@@ -9,7 +9,11 @@
           <h5 class="card-header">Update Category</h5>
           <div class="card-body">
             <!-- Form Start -->
-            <form action="/admin/update-category/<%= category._id %>" method="POST" autocomplete="off">
+            <form
+              action="/admin/update-category/<%= category._id %>"
+              method="POST"
+              autocomplete="off"
+            >
               <div class="mb-3">
                 <label for="" class="form-label">Category Name</label>
                 <input
@@ -23,7 +27,9 @@
               </div>
               <div class="mb-3">
                 <label for="" class="form-label">Description</label>
-                <textarea name="description" class="form-control"><%= category.description %></textarea>
+                <textarea name="description" class="form-control">
+<%= category.description %></textarea
+                >
               </div>
               <input
                 type="submit"
@@ -34,6 +40,8 @@
               />
             </form>
             <!-- /Form End -->
+            <!-- ERROR Message -->
+            <%- include("../partials/error", { errors }) %>
           </div>
         </div>
       </div>
