@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const CategoryModel = require("../models/Category");
 const NewsModel = require("../models/News");
 const CommentModel = require("../models/Comment");
+const SettingModel = require("../models/Setting");
 const UserModel = require("../models/User");
 
 const index = async (req, res) => {
@@ -21,12 +22,14 @@ const index = async (req, res) => {
     _id: { $in: categoriesInUse },
   });
 
-
   const recentPosts = await NewsModel.find()
     .sort({ createdAt: -1 })
     .limit(5)
     .populate("category", "name slug");
-  res.render("index", { news, categories, recentPosts });
+
+  // Fetch site settings
+  const settings = await SettingModel.findOne({});
+  res.render("index", { news, categories, recentPosts, settings });
 };
 
 const articalByCategory = async (req, res) => {
@@ -45,11 +48,18 @@ const articalByCategory = async (req, res) => {
   const categories = await CategoryModel.find({
     _id: { $in: categoriesInUse },
   });
-    const recentPosts = await NewsModel.find()
-  .sort({ createdAt: -1 })
-  .limit(5)
-  .populate("category", "name slug");
-  res.render("category", { news, categories, categoryName: category.name, recentPosts });
+  const recentPosts = await NewsModel.find()
+    .sort({ createdAt: -1 })
+    .limit(5)
+    .populate("category", "name slug");
+  const settings = await SettingModel.findOne({});
+  res.render("category", {
+    news,
+    categories,
+    categoryName: category.name,
+    recentPosts,
+    settings,
+  });
 };
 
 const singleArticle = async (req, res) => {
@@ -66,10 +76,11 @@ const singleArticle = async (req, res) => {
     _id: { $in: categoriesInUse },
   });
   const recentPosts = await NewsModel.find()
-  .sort({ createdAt: -1 })
-  .limit(5)
-  .populate("category", "name slug");
-  res.render("single", { singleNews, categories, recentPosts });
+    .sort({ createdAt: -1 })
+    .limit(5)
+    .populate("category", "name slug");
+  const settings = await SettingModel.findOne({});
+  res.render("single", { singleNews, categories, recentPosts, settings });
 };
 
 const search = async (req, res) => {
@@ -101,11 +112,12 @@ const author = async (req, res) => {
   const categories = await CategoryModel.find({
     _id: { $in: categoriesInUse },
   });
-    const recentPosts = await NewsModel.find()
-  .sort({ createdAt: -1 })
-  .limit(5)
-  .populate("category", "name slug");
-  res.render("author", { news, categories, recentPosts });
+  const recentPosts = await NewsModel.find()
+    .sort({ createdAt: -1 })
+    .limit(5)
+    .populate("category", "name slug");
+  const settings = await SettingModel.findOne({});
+  res.render("author", { news, categories, recentPosts, settings });
 };
 
 const addComment = async (req, res) => {

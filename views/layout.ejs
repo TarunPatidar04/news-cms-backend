@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>News</title>
+
+      <% if(settings. website_title) { %>    <title><%= settings. website_title
+      %></title> <% } else { %> <title>News</title> <% } %>
+    </title>
     <!-- Bootstrap -->
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Font Awesome Icon -->
@@ -21,7 +24,19 @@
         <div class="row justify-content-center">
           <!-- LOGO -->
           <div class="col-md-3">
-            <a href="/" id="logo"><img src="/images/news.jpg" alt="Logo" /></a>
+            <% if(settings.website_logo) { %>
+            <a href="/">
+              <img
+                src="/uploads/<%= settings.website_logo %>"
+                alt="Logo"
+                width="100"
+              />
+            </a>
+            <% } else { %>
+            <a href="/">
+              <img src="/images/logo.png" alt="Logo" />
+            </a>
+            <% } %>
           </div>
           <!-- /LOGO -->
         </div>
@@ -37,7 +52,9 @@
               <li><a href="/">Home</a></li>
               <% categories.forEach(function(category) { %>
               <li>
-                <a href="/category/<%= category.slug %>"><%= category.name %></a>
+                <a href="/category/<%= category.slug %>"
+                  ><%= category.name %></a
+                >
               </li>
               <% }) %>
             </ul>
@@ -64,10 +81,14 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12">
+            <% if(settings.footer_description) { %>
+            <span><%= settings.footer_description %></span>
+            <% } else { %>
             <span
               >© Copyright 2025 News | Powered by
               <a href="http://www.yahubaba.com/">Yahu Baba</a></span
             >
+            <% } %>
           </div>
         </div>
       </div>
