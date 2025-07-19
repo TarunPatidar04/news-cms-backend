@@ -47,7 +47,6 @@ exports.addArticle = async (req, res, next) => {
     });
   }
   try {
-    console.log("article", req.body);
     const { title, content, category } = req.body;
 
     const article = new newsModel({
