@@ -21,7 +21,7 @@ exports.loginPage = async (req, res) => {
 };
 
 // Admin login controller
-exports.adminLogin = async (req, res) => {
+exports.adminLogin = async (req, res,next) => {
   // Check for validation errors
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
